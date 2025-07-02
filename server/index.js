@@ -45,10 +45,8 @@ passport.deserializeUser((user, done) => {
 passport.use(
   new GoogleStrategy(
     {
-      clientID:
-        "826741736114-v12ng7vju6ic9m29jemsqass0bcgbing.apps.googleusercontent.com",
-      clientSecret:
-        "826741736114-v12ng7vju6ic9m29jemsqass0bcgbing.apps.googleusercontent.com", // Replace with real secret if you have it
+      clientID: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
       callbackURL: process.env.GOOGLE_CALLBACK_URL || "https://worldwise-ai-whispers.onrender.com/auth/google/callback",
     },
     (accessToken, refreshToken, profile, done) => {
