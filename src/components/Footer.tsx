@@ -57,9 +57,10 @@ const Footer = () => {
 
         {/* Bottom Section */}
         <div className="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center">
-          <p className="text-gray-400 text-sm mb-4 md:mb-0">
-            © 2024 WorldWise AI. All rights reserved.
-          </p>
+          <div className="text-gray-400 text-sm mb-4 md:mb-0">
+            <p>© 2024 WorldWise AI. All rights reserved.</p>
+            <p className="mt-1">Created by Harsh Doshi</p>
+          </div>
           
           <div className="flex space-x-6 text-sm text-gray-400">
             <span className="hover:text-white transition-colors cursor-pointer">🌍 Available in 50+ languages</span>

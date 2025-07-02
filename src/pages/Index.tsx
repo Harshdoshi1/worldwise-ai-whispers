@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+<<<<<<< HEAD
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -11,10 +12,14 @@ import {
   Headphones,
 } from "lucide-react";
 import { useState, useEffect } from "react";
+=======
+import { Map } from "lucide-react";
+>>>>>>> 937182c4086ed7e5e2b895deaaba534da4de40e4
 import Hero from "@/components/Hero";
 import Features from "@/components/Features";
 import StudyAbroad from "@/components/StudyAbroad";
 import Footer from "@/components/Footer";
+<<<<<<< HEAD
 import Chat from "@/components/Chat";
 import LoginModal from "@/components/LoginModal";
 
@@ -30,10 +35,18 @@ const Index = () => {
       window.removeEventListener("show-login-modal", handleShowLoginModal);
     };
   }, []);
+=======
+import LoginDialog from "@/components/LoginDialog";
+
+const Index = () => {
+  const scrollToSection = (sectionId: string) => {
+    document.getElementById(sectionId)?.scrollIntoView({ behavior: 'smooth' });
+  };
+>>>>>>> 937182c4086ed7e5e2b895deaaba534da4de40e4
 
   return (
     <div className="min-h-screen bg-black text-white overflow-hidden">
-      {/* Navigation */}
+      {/* Navigation - Updated */}
       <nav className="relative z-50 flex items-center justify-between p-6 bg-black/50 backdrop-blur-md border-b border-purple-900/20">
         <div className="flex items-center space-x-2">
           <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
@@ -45,6 +58,7 @@ const Index = () => {
         </div>
 
         <div className="hidden md:flex items-center space-x-6">
+<<<<<<< HEAD
           <a
             href="#features"
             className="text-gray-300 hover:text-white transition-colors"
@@ -69,6 +83,31 @@ const Index = () => {
           >
             Get Started
           </Button>
+=======
+          <button 
+            onClick={() => scrollToSection('features')}
+            className="text-gray-300 hover:text-white transition-colors cursor-pointer"
+          >
+            Features
+          </button>
+          <button 
+            onClick={() => scrollToSection('demo')}
+            className="text-gray-300 hover:text-white transition-colors cursor-pointer"
+          >
+            Demo
+          </button>
+          <button 
+            onClick={() => scrollToSection('study')}
+            className="text-gray-300 hover:text-white transition-colors cursor-pointer"
+          >
+            Study Abroad
+          </button>
+          <LoginDialog>
+            <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white">
+              Get Started
+            </Button>
+          </LoginDialog>
+>>>>>>> 937182c4086ed7e5e2b895deaaba534da4de40e4
         </div>
       </nav>
       <LoginModal open={loginOpen} onClose={() => setLoginOpen(false)} />
