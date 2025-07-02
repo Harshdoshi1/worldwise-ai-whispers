@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Mic, MicOff, Headphones } from "lucide-react";
@@ -11,16 +10,19 @@ const VoiceDemo = () => {
   const demoConversations = [
     {
       question: "What should I eat in Bangkok?",
-      response: "Bangkok is a street food paradise! Try Pad Thai from street vendors, Tom Yum soup for authentic flavors, and don't miss Mango Sticky Rice for dessert. Visit Chatuchak Market for the best variety!"
+      response:
+        "Bangkok is a street food paradise! Try Pad Thai from street vendors, Tom Yum soup for authentic flavors, and don't miss Mango Sticky Rice for dessert. Visit Chatuchak Market for the best variety!",
     },
     {
       question: "Tell me about studying in Germany",
-      response: "Germany offers excellent free education at public universities! Popular cities include Berlin, Munich, and Hamburg. You'll need around €800-1000/month for living expenses. Many programs are taught in English."
+      response:
+        "Germany offers excellent free education at public universities! Popular cities include Berlin, Munich, and Hamburg. You'll need around €800-1000/month for living expenses. Many programs are taught in English.",
     },
     {
       question: "How do I greet people in Japan?",
-      response: "In Japan, bow slightly and say 'Konnichiwa' (koh-nee-chee-wah) during the day. For formal situations, use 'Arigatou gozaimasu' (ah-ree-gah-toh goh-zah-ee-mahs) meaning 'thank you very much'."
-    }
+      response:
+        "In Japan, bow slightly and say 'Konnichiwa' (koh-nee-chee-wah) during the day. For formal situations, use 'Arigatou gozaimasu' (ah-ree-gah-toh goh-zah-ee-mahs) meaning 'thank you very much'.",
+    },
   ];
 
   const toggleRecording = () => {
@@ -57,9 +59,9 @@ const VoiceDemo = () => {
                   onClick={toggleRecording}
                   size="lg"
                   className={`w-24 h-24 rounded-full transition-all duration-300 ${
-                    isRecording 
-                      ? 'bg-red-500 hover:bg-red-600 animate-pulse' 
-                      : 'bg-gradient-to-br from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 hover:scale-110'
+                    isRecording
+                      ? "bg-red-500 hover:bg-red-600 animate-pulse"
+                      : "bg-gradient-to-br from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 hover:scale-110"
                   }`}
                 >
                   {isRecording ? (
@@ -69,21 +71,23 @@ const VoiceDemo = () => {
                   )}
                 </Button>
               </div>
-              
+
               <p className="text-gray-300 mb-4">
-                {isRecording ? 'Listening...' : 'Tap to speak'}
+                {isRecording ? "Listening..." : "Tap to speak"}
               </p>
-              
+
               <div className="flex justify-center space-x-2">
                 {[...Array(5)].map((_, i) => (
                   <div
                     key={i}
                     className={`w-2 h-8 bg-gradient-to-t from-blue-500 to-purple-500 rounded-full transition-all duration-300 ${
-                      isRecording ? 'animate-pulse' : 'opacity-30'
+                      isRecording ? "animate-pulse" : "opacity-30"
                     }`}
                     style={{
                       animationDelay: `${i * 0.1}s`,
-                      height: isRecording ? `${20 + Math.random() * 20}px` : '8px'
+                      height: isRecording
+                        ? `${20 + Math.random() * 20}px`
+                        : "8px",
                     }}
                   />
                 ))}
@@ -99,7 +103,9 @@ const VoiceDemo = () => {
                   <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
                     <span className="text-white text-sm">You</span>
                   </div>
-                  <p className="text-blue-200">{demoConversations[currentDemo].question}</p>
+                  <p className="text-blue-200">
+                    {demoConversations[currentDemo].question}
+                  </p>
                 </div>
               </CardContent>
             </Card>
@@ -111,7 +117,9 @@ const VoiceDemo = () => {
                     <span className="text-white text-xs">AI</span>
                   </div>
                   <div>
-                    <p className="text-purple-200 mb-2">{demoConversations[currentDemo].response}</p>
+                    <p className="text-purple-200 mb-2">
+                      {demoConversations[currentDemo].response}
+                    </p>
                     <div className="flex items-center space-x-2 text-gray-400 text-sm">
                       <Headphones className="w-4 h-4" />
                       <span>Voice response available</span>
@@ -124,8 +132,12 @@ const VoiceDemo = () => {
             <div className="text-center">
               <Button
                 variant="outline"
-                onClick={() => setCurrentDemo((prev) => (prev + 1) % demoConversations.length)}
-                className="border-gray-600 text-gray-300 hover:text-white hover:border-gray-500"
+                onClick={() =>
+                  setCurrentDemo(
+                    (prev) => (prev + 1) % demoConversations.length
+                  )
+                }
+                className="border-gray-600 text-black hover:text-black hover:border-gray-500 bg-white"
               >
                 Try Another Example
               </Button>

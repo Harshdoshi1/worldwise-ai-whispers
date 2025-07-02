@@ -1,16 +1,36 @@
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Mic, MicOff, Search, Map, Book, Users, Headphones } from "lucide-react";
-import { useState } from "react";
+import {
+  Mic,
+  MicOff,
+  Search,
+  Map,
+  Book,
+  Users,
+  Headphones,
+} from "lucide-react";
+import { useState, useEffect } from "react";
 import Hero from "@/components/Hero";
 import Features from "@/components/Features";
-import VoiceDemo from "@/components/VoiceDemo";
 import StudyAbroad from "@/components/StudyAbroad";
 import Footer from "@/components/Footer";
+import Chat from "@/components/Chat";
+import LoginModal from "@/components/LoginModal";
 
 const Index = () => {
+  const [loginOpen, setLoginOpen] = useState(false);
+
+  useEffect(() => {
+    function handleShowLoginModal() {
+      setLoginOpen(true);
+    }
+    window.addEventListener("show-login-modal", handleShowLoginModal);
+    return () => {
+      window.removeEventListener("show-login-modal", handleShowLoginModal);
+    };
+  }, []);
+
   return (
     <div className="min-h-screen bg-black text-white overflow-hidden">
       {/* Navigation */}
@@ -23,29 +43,45 @@ const Index = () => {
             WorldWise AI
           </span>
         </div>
-        
+
         <div className="hidden md:flex items-center space-x-6">
-          <a href="#features" className="text-gray-300 hover:text-white transition-colors">Features</a>
-          <a href="#demo" className="text-gray-300 hover:text-white transition-colors">Demo</a>
-          <a href="#study" className="text-gray-300 hover:text-white transition-colors">Study Abroad</a>
-          <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white">
+          <a
+            href="#features"
+            className="text-gray-300 hover:text-white transition-colors"
+          >
+            Features
+          </a>
+          <a
+            href="#chat"
+            className="text-gray-300 hover:text-white transition-colors"
+          >
+            Chat
+          </a>
+          <a
+            href="#study"
+            className="text-gray-300 hover:text-white transition-colors"
+          >
+            Study Abroad
+          </a>
+          <Button
+            className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white"
+            onClick={() => setLoginOpen(true)}
+          >
             Get Started
           </Button>
         </div>
       </nav>
-
+      <LoginModal open={loginOpen} onClose={() => setLoginOpen(false)} />
       {/* Hero Section */}
       <Hero />
-
+      {/* Chat Section */}
+      <div id="chat">
+        <Chat />
+      </div>
       {/* Features Section */}
       <Features />
-
-      {/* Voice Demo Section */}
-      <VoiceDemo />
-
       {/* Study Abroad Section */}
       <StudyAbroad />
-
       {/* Footer */}
       <Footer />
     </div>

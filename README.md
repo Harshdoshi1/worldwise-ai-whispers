@@ -1,3 +1,19 @@
+# WorldWise AI Backend
+
+A Node.js + Express backend server is available in the `server/` directory. It provides a `/chat` endpoint that connects to OpenAI GPT-4. To run:
+
+```sh
+cd worldwise-ai-whispers/server
+npm install
+npm run dev
+```
+
+Create a `.env` file with your OpenAI API key:
+
+```
+OPENAI_API_KEY=your-openai-api-key-here
+```
+
 # Welcome to your Lovable project
 
 ## Project info

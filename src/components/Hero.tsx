@@ -1,10 +1,81 @@
-
 import { Button } from "@/components/ui/button";
-import { Mic, Search } from "lucide-react";
-import { useState } from "react";
+import { Mic, Search, MicOff, Send } from "lucide-react";
+import { useState, useRef } from "react";
+import React from "react";
 
 const Hero = () => {
   const [isVoiceMode, setIsVoiceMode] = useState(true);
+  const [listening, setListening] = useState(false);
+  const [transcript, setTranscript] = useState("");
+  const recognitionRef = useRef<any>(null);
+
+  function startListening() {
+    const SpeechRecognition =
+      (window as any).SpeechRecognition ||
+      (window as any).webkitSpeechRecognition;
+    if (!SpeechRecognition) return;
+    const recognition = new SpeechRecognition();
+    recognition.lang = "en-US";
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+    recognitionRef.current = recognition;
+    setListening(true);
+    setTranscript("");
+    recognition.onresult = (event: any) => {
+      const t = event.results[0][0].transcript;
+      setTranscript(t);
+      setListening(false);
+    };
+    recognition.onerror = () => {
+      setListening(false);
+    };
+    recognition.onend = () => {
+      setListening(false);
+    };
+    recognition.start();
+  }
+
+  function stopListening() {
+    if (recognitionRef.current) {
+      recognitionRef.current.abort();
+      setListening(false);
+    }
+  }
+
+  function sendToAI() {
+    window.dispatchEvent(
+      new CustomEvent("send-to-chat", { detail: transcript })
+    );
+    const chatSection = document.getElementById("chat");
+    if (chatSection) {
+      chatSection.scrollIntoView({ behavior: "smooth" });
+    }
+    setTranscript("");
+  }
+
+  React.useEffect(() => {
+    function handleSendToChat(e: any) {
+      const chatInput = document.querySelector(
+        '#chat input[type="text"]'
+      ) as HTMLInputElement;
+      if (chatInput) {
+        const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
+          window.HTMLInputElement.prototype,
+          "value"
+        )!.set;
+        nativeInputValueSetter!.call(chatInput, e.detail);
+        chatInput.dispatchEvent(new Event("input", { bubbles: true }));
+        setTimeout(() => {
+          const sendBtn = document.querySelector(
+            '#chat button[type="submit"]'
+          ) as HTMLButtonElement;
+          if (sendBtn) sendBtn.click();
+        }, 100);
+      }
+    }
+    window.addEventListener("send-to-chat", handleSendToChat);
+    return () => window.removeEventListener("send-to-chat", handleSendToChat);
+  }, []);
 
   return (
     <section className="relative min-h-screen flex items-center justify-center px-6 py-20">
@@ -25,63 +96,99 @@ const Hero = () => {
             <br />
             <span className="text-white">with AI Guidance</span>
           </h1>
-          
+
           <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto leading-relaxed">
-            Your intelligent travel companion that speaks your language. Get personalized recommendations, 
-            cultural insights, and study abroad guidance through voice or text.
+            Your intelligent travel companion that speaks your language. Get
+            personalized recommendations, cultural insights, and study abroad
+            guidance through voice or text.
           </p>
         </div>
 
         {/* Interactive Demo */}
         <div className="mb-12">
           <div className="bg-gray-900/50 backdrop-blur-md rounded-2xl p-8 max-w-2xl mx-auto border border-gray-800">
-            <div className="flex items-center justify-center mb-6">
-              <Button
-                variant={isVoiceMode ? "default" : "outline"}
-                onClick={() => setIsVoiceMode(true)}
-                className={`mr-4 ${isVoiceMode ? 'bg-gradient-to-r from-blue-600 to-purple-600' : 'border-gray-600'}`}
-              >
-                <Mic className="w-4 h-4 mr-2" />
-                Voice
-              </Button>
-              <Button
-                variant={!isVoiceMode ? "default" : "outline"}
-                onClick={() => setIsVoiceMode(false)}
-                className={`${!isVoiceMode ? 'bg-gradient-to-r from-blue-600 to-purple-600' : 'border-gray-600'}`}
-              >
-                <Search className="w-4 h-4 mr-2" />
-                Text
-              </Button>
-            </div>
-
-            {isVoiceMode ? (
-              <div className="text-center">
-                <div className="w-20 h-20 mx-auto mb-4 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center hover:scale-110 transition-transform cursor-pointer">
-                  <Mic className="w-8 h-8 text-white" />
+            <div className="text-center">
+              <div className="mb-8 flex flex-col items-center">
+                <Button
+                  onClick={listening ? stopListening : startListening}
+                  size="lg"
+                  className={`w-20 h-20 rounded-full transition-all duration-300 mb-2 ${
+                    listening
+                      ? "bg-red-500 hover:bg-red-600 animate-pulse"
+                      : "bg-gradient-to-br from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 hover:scale-110"
+                  }`}
+                >
+                  {listening ? (
+                    <MicOff className="w-8 h-8 text-white" />
+                  ) : (
+                    <Mic className="w-8 h-8 text-white" />
+                  )}
+                </Button>
+                <p className="text-gray-300 mb-2">
+                  {listening ? "Listening..." : "Tap to speak"}
+                </p>
+                {transcript && (
+                  <div className="bg-black/50 p-3 rounded-lg mb-2">
+                    <p className="text-green-400 text-sm">You said:</p>
+                    <p className="text-white text-sm">{transcript}</p>
+                  </div>
+                )}
+                <div className="flex justify-center space-x-2">
+                  {[...Array(5)].map((_, i) => (
+                    <div
+                      key={i}
+                      className={`w-2 h-8 bg-gradient-to-t from-blue-500 to-purple-500 rounded-full transition-all duration-300 ${
+                        listening ? "animate-pulse" : "opacity-30"
+                      }`}
+                      style={{
+                        animationDelay: `${i * 0.1}s`,
+                        height: listening
+                          ? `${20 + Math.random() * 20}px`
+                          : "8px",
+                      }}
+                    />
+                  ))}
                 </div>
-                <p className="text-gray-300 mb-2">Try saying:</p>
-                <p className="text-blue-400 font-medium">"Tell me about Tokyo's food scene"</p>
+                {transcript && !listening && (
+                  <Button
+                    size="icon"
+                    className="mt-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-full w-12 h-12 flex items-center justify-center"
+                    onClick={sendToAI}
+                    aria-label="Send to AI"
+                  >
+                    <Send className="w-6 h-6" />
+                  </Button>
+                )}
               </div>
-            ) : (
-              <div className="text-center">
-                <input
-                  type="text"
-                  placeholder="Ask me about any destination..."
-                  className="w-full p-4 bg-black/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:border-blue-500 focus:outline-none"
-                />
-                <p className="text-gray-400 mt-2 text-sm">Press Enter to explore</p>
-              </div>
-            )}
+            </div>
           </div>
         </div>
 
         {/* CTA Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-          <Button size="lg" className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-4 text-lg">
+          <Button
+            size="lg"
+            className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-4 text-lg"
+            onClick={() => {
+              const featuresSection = document.getElementById("features");
+              if (featuresSection) {
+                featuresSection.scrollIntoView({ behavior: "smooth" });
+              }
+            }}
+          >
             Start Exploring
           </Button>
-          <Button size="lg" variant="outline" className="border-gray-600 text-gray-300 hover:text-white hover:border-gray-500 px-8 py-4 text-lg">
-            Watch Demo
+          <Button
+            size="lg"
+            className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white"
+            onClick={() => {
+              const chatSection = document.getElementById("chat");
+              if (chatSection) {
+                chatSection.scrollIntoView({ behavior: "smooth" });
+              }
+            }}
+          >
+            Ask AI
           </Button>
         </div>
 
