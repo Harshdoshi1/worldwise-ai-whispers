@@ -1,5 +1,4 @@
-
-import { Map } from "lucide-react";
+import { Map, Mail, Github, Linkedin } from "lucide-react";
 
 const Footer = () => {
   return (
@@ -17,7 +16,8 @@ const Footer = () => {
               </span>
             </div>
             <p className="text-gray-400 text-sm">
-              Your intelligent travel companion for exploring the world with confidence.
+              Your intelligent travel companion for exploring the world with
+              confidence.
             </p>
           </div>
 
@@ -25,21 +25,39 @@ const Footer = () => {
           <div>
             <h4 className="text-white font-semibold mb-4">Features</h4>
             <ul className="space-y-2 text-sm text-gray-400">
-              <li className="hover:text-white transition-colors cursor-pointer">Voice Assistant</li>
-              <li className="hover:text-white transition-colors cursor-pointer">Travel Planning</li>
-              <li className="hover:text-white transition-colors cursor-pointer">Cultural Guide</li>
-              <li className="hover:text-white transition-colors cursor-pointer">Study Abroad</li>
+              <li className="hover:text-white transition-colors cursor-pointer">
+                Voice Assistant
+              </li>
+              <li className="hover:text-white transition-colors cursor-pointer">
+                Travel Planning
+              </li>
+              <li className="hover:text-white transition-colors cursor-pointer">
+                Cultural Guide
+              </li>
+              <li className="hover:text-white transition-colors cursor-pointer">
+                Study Abroad
+              </li>
             </ul>
           </div>
 
           {/* Destinations */}
           <div>
-            <h4 className="text-white font-semibold mb-4">Popular Destinations</h4>
+            <h4 className="text-white font-semibold mb-4">
+              Popular Destinations
+            </h4>
             <ul className="space-y-2 text-sm text-gray-400">
-              <li className="hover:text-white transition-colors cursor-pointer">Japan</li>
-              <li className="hover:text-white transition-colors cursor-pointer">Germany</li>
-              <li className="hover:text-white transition-colors cursor-pointer">Thailand</li>
-              <li className="hover:text-white transition-colors cursor-pointer">Canada</li>
+              <li className="hover:text-white transition-colors cursor-pointer">
+                Japan
+              </li>
+              <li className="hover:text-white transition-colors cursor-pointer">
+                Germany
+              </li>
+              <li className="hover:text-white transition-colors cursor-pointer">
+                Thailand
+              </li>
+              <li className="hover:text-white transition-colors cursor-pointer">
+                Canada
+              </li>
             </ul>
           </div>
 
@@ -47,10 +65,18 @@ const Footer = () => {
           <div>
             <h4 className="text-white font-semibold mb-4">Support</h4>
             <ul className="space-y-2 text-sm text-gray-400">
-              <li className="hover:text-white transition-colors cursor-pointer">Help Center</li>
-              <li className="hover:text-white transition-colors cursor-pointer">Contact Us</li>
-              <li className="hover:text-white transition-colors cursor-pointer">Privacy Policy</li>
-              <li className="hover:text-white transition-colors cursor-pointer">Terms of Service</li>
+              <li className="hover:text-white transition-colors cursor-pointer">
+                Help Center
+              </li>
+              <li className="hover:text-white transition-colors cursor-pointer">
+                Contact Us
+              </li>
+              <li className="hover:text-white transition-colors cursor-pointer">
+                Privacy Policy
+              </li>
+              <li className="hover:text-white transition-colors cursor-pointer">
+                Terms of Service
+              </li>
             </ul>
           </div>
         </div>
@@ -61,11 +87,45 @@ const Footer = () => {
             <p>© 2024 WorldWise AI. All rights reserved.</p>
             <p className="mt-1">Created by Harsh Doshi</p>
           </div>
-          
+
           <div className="flex space-x-6 text-sm text-gray-400">
-            <span className="hover:text-white transition-colors cursor-pointer">🌍 Available in 50+ languages</span>
-            <span className="hover:text-white transition-colors cursor-pointer">🤖 Powered by Advanced AI</span>
+            <span className="hover:text-white transition-colors cursor-pointer">
+              🌍 Available in 50+ languages
+            </span>
+            <span className="hover:text-white transition-colors cursor-pointer">
+              🤖 Powered by Advanced AI
+            </span>
           </div>
+        </div>
+
+        <div className="flex space-x-6 mb-2 mt-4">
+          <a
+            href="mailto:harshdoshiyt02@gmail.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-cyan-400 transition-colors"
+            aria-label="Email"
+          >
+            <Mail className="w-6 h-6" />
+          </a>
+          <a
+            href="https://github.com/Harshdoshi1"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-cyan-400 transition-colors"
+            aria-label="GitHub"
+          >
+            <Github className="w-6 h-6" />
+          </a>
+          <a
+            href="https://www.linkedin.com/in/harsh-doshi-4a840b24a/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-cyan-400 transition-colors"
+            aria-label="LinkedIn"
+          >
+            <Linkedin className="w-6 h-6" />
+          </a>
         </div>
       </div>
     </footer>

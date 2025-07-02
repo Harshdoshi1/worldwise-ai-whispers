@@ -9,7 +9,9 @@ const LoginModal = ({ open, onClose }) => {
   async function handleGoogleLogin() {
     setLoading(true);
     try {
-      const { data, error } = await supabase.auth.signInWithOAuth({ provider: "google" });
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+      });
       if (error) throw error;
       // The user will be redirected, so the rest is for SSR or popup mode
     } catch (err) {
@@ -33,6 +35,7 @@ const LoginModal = ({ open, onClose }) => {
           avatar_url: user.user_metadata?.avatar_url || null,
         });
         if (onClose) onClose();
+        window.location.assign("/dashboard");
       }
     });
   }
@@ -53,7 +56,9 @@ const LoginModal = ({ open, onClose }) => {
             onClick={handleGoogleLogin}
             disabled={loading}
           >
-            {loading ? "Signing in..." : (
+            {loading ? (
+              "Signing in..."
+            ) : (
               <>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"

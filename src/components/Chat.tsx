@@ -1,11 +1,15 @@
 import React, { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Mic, Maximize2, Minimize2 } from "lucide-react";
+import { Mic, Maximize2, Minimize2, X } from "lucide-react";
 
 const neonBlue = "#3BD4E7";
 
-const Chat = () => {
+const Chat = ({
+  fullscreen: fullscreenProp = false,
+  unlimited = false,
+  onClose,
+}) => {
   const [messages, setMessages] = useState([
     {
       role: "ai",
@@ -16,11 +20,12 @@ const Chat = () => {
   const [userMessage, setUserMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [listening, setListening] = useState(false);
-  const [fullscreen, setFullscreen] = useState(false);
+  const [muted, setMuted] = useState(false);
+  const [fullscreen, setFullscreen] = useState(fullscreenProp || unlimited);
   const recognitionRef = useRef(null);
   const messagesEndRef = useRef(null);
   const [loginPrompt, setLoginPrompt] = useState(false);
-  const maxFreeMessages = 3;
+  const maxFreeMessages = unlimited ? Infinity : 3;
   const CHAT_LIMIT_KEY = "wwai_user_message_count";
   // Store images for each AI message by index
   const [aiImages, setAiImages] = useState({});
@@ -57,10 +62,10 @@ const Chat = () => {
     localStorage.setItem(CHAT_LIMIT_KEY, count.toString());
   }, [messages]);
 
-  // TTS: Speak latest AI message when it arrives and not listening
+  // TTS: Speak latest AI message when it arrives and not listening/muted
   React.useEffect(() => {
     if (typeof window === "undefined" || !window.speechSynthesis) return;
-    if (listening) {
+    if (listening || muted) {
       window.speechSynthesis.cancel();
       return;
     }
@@ -94,7 +99,7 @@ const Chat = () => {
       utter.pitch = 1;
       synth.speak(utter);
     }
-  }, [messages, listening]);
+  }, [messages, listening, muted]);
 
   // Fetch images after new AI message
   React.useEffect(() => {
@@ -153,7 +158,14 @@ const Chat = () => {
         body: JSON.stringify({ message: input }),
       });
       const data = await res.json();
-      setMessages((prev) => [...prev, { role: "ai", content: data.reply }]);
+      setMessages((prev) => {
+        const newMessages = [...prev, { role: "ai", content: data.reply }];
+        // Store images for this AI message if any
+        if (data.images && Array.isArray(data.images) && data.images.length > 0) {
+          setAiImages((prevImages) => ({ ...prevImages, [newMessages.length - 1]: data.images }));
+        }
+        return newMessages;
+      });
     } catch (err) {
       setMessages((prev) => [
         ...prev,
@@ -232,20 +244,54 @@ const Chat = () => {
             : undefined,
         }}
       >
-        {/* Fullscreen toggle button */}
-        <button
-          className="absolute top-3 right-3 z-30 p-2 rounded-full bg-black/60 hover:bg-black/80 border border-gray-800 text-cyan-300 transition-colors"
-          style={{ color: neonBlue }}
-          onClick={() => setFullscreen((f) => !f)}
-          aria-label={fullscreen ? "Exit fullscreen" : "Enter fullscreen"}
-        >
-          {fullscreen ? (
-            <Minimize2 className="w-5 h-5" />
-          ) : (
-            <Maximize2 className="w-5 h-5" />
-          )}
-        </button>
+        {/* Close X button for fullscreen/unlimited mode */}
+        {(fullscreen || unlimited) && onClose && (
+          <button
+            className="absolute top-3 right-3 z-40 p-2 rounded-full bg-black/70 hover:bg-black/90 border border-gray-800 text-cyan-300 transition-colors"
+            style={{ color: neonBlue }}
+            onClick={onClose}
+            aria-label="Close chat"
+          >
+            <X className="w-6 h-6" />
+          </button>
+        )}
+        {/* Fullscreen toggle button (hide for unlimited/logged-in users) */}
+        {!unlimited && (
+          <button
+            className="absolute top-3 right-3 z-30 p-2 rounded-full bg-black/60 hover:bg-black/80 border border-gray-800 text-cyan-300 transition-colors"
+            style={{ color: neonBlue }}
+            onClick={() => setFullscreen((f) => !f)}
+            aria-label={fullscreen ? "Exit fullscreen" : "Enter fullscreen"}
+          >
+            {fullscreen ? (
+              <Minimize2 className="w-5 h-5" />
+            ) : (
+              <Maximize2 className="w-5 h-5" />
+            )}
+          </button>
+        )}
         <CardContent className="flex flex-col h-full p-4">
+            {/* Mute Button for TTS */}
+            {typeof window !== "undefined" && window.speechSynthesis && (
+              <button
+                className={`absolute top-3 left-3 z-40 p-2 rounded-full bg-black/70 hover:bg-black/90 border border-gray-800 text-cyan-300 transition-colors ${muted ? 'opacity-70' : ''}`}
+                style={{ color: neonBlue }}
+                onClick={() => {
+                  setMuted((m) => {
+                    if (!m) window.speechSynthesis.cancel();
+                    return !m;
+                  });
+                }}
+                aria-label={muted ? "Unmute AI Voice" : "Mute AI Voice"}
+                title={muted ? "Unmute AI Voice" : "Mute AI Voice"}
+              >
+                {muted ? (
+                  <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-volume-x"><polygon points="1 1 23 23"/><path d="M9 9v6h4l5 5V4l-5 5H9z"/><line x1="23" y1="1" x2="1" y2="23"/></svg>
+                ) : (
+                  <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-volume-2"><polygon points="1 1 23 23"/><path d="M9 9v6h4l5 5V4l-5 5H9z"/><path d="M19 5a7 7 0 0 1 0 14"/><path d="M15 9a3 3 0 0 1 0 6"/></svg>
+                )}
+              </button>
+            )}
           {/* Chat messages with scrollable area */}
           <div
             className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-cyan-400 scrollbar-track-gray-800 pr-2"
@@ -254,67 +300,52 @@ const Chat = () => {
               minHeight: "180px",
               paddingRight: "0.5rem",
               scrollbarColor: `${neonBlue} #222`,
-              scrollbarWidth: "thin",
-              borderRadius: "0.75rem",
             }}
           >
-            {messages.map((msg, idx) => (
-              <div key={idx} className="flex flex-col mb-2">
-                <div className="flex items-start space-x-3">
+            {listening && (
+              <div className="flex items-end space-x-1 mb-2">
+                {[...Array(7)].map((_, i) => (
                   <div
-                    className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                      msg.role === "ai"
-                        ? "bg-gradient-to-br from-purple-500 to-blue-500"
-                        : "bg-blue-500"
-                    }`}
-                  >
-                    <span className="text-white text-xs">
-                      {msg.role === "ai" ? "AI" : "You"}
-                    </span>
-                  </div>
-                  <p
-                    className={
-                      msg.role === "ai" ? "text-purple-200" : "text-blue-200"
-                    }
-                  >
-                    {msg.content}
-                  </p>
-                </div>
-                {/* Render images for this AI message if available and non-empty */}
-                {msg.role === "ai" &&
-                  aiImages[idx] &&
-                  aiImages[idx].length > 0 && (
-                    <div
-                      className="mt-2 flex gap-3 overflow-x-auto"
-                      style={{ paddingLeft: 44 }}
-                    >
-                      {aiImages[idx].map((url, i) => (
-                        <img
-                          key={i}
-                          src={url}
-                          alt="Related visual"
-                          style={{
-                            height: 160,
-                            width: "auto",
-                            borderRadius: 16,
-                            boxShadow: "0 4px 16px rgba(0,0,0,0.18)",
-                            objectFit: "cover",
-                            background: "#222",
-                          }}
-                        />
-                      ))}
-                    </div>
-                  )}
-              </div>
-            ))}
-            {loading && (
-              <div className="flex items-start space-x-3 mb-2">
-                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center">
-                  <span className="text-white text-xs">AI</span>
-                </div>
-                <p className="text-purple-200 italic">Thinking...</p>
+                    key={i}
+                    className="w-2 rounded bg-gradient-to-t from-blue-400 to-cyan-400 animate-pulse"
+                    style={{
+                      height: `${18 + Math.random() * 18}px`,
+                      animationDelay: `${i * 0.12}s`,
+                      background: `linear-gradient(to top, #3BD4E7, #a78bfa)`,
+                    }}
+                  />
+                ))}
               </div>
             )}
+            {messages.map((msg, idx) => (
+              <div key={idx} className={`mb-4 flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
+                <Card className={`max-w-[80%] ${msg.role === "user" ? "bg-cyan-900/80 border-cyan-700 ml-auto" : "bg-purple-900/20 border-purple-800/50"}`}>
+                  <CardContent className="p-4">
+                    <div className="flex items-start space-x-3">
+                      <div className={`w-8 h-8 rounded-full flex items-center justify-center ${msg.role === "user" ? "bg-cyan-700" : "bg-gradient-to-br from-purple-500 to-blue-500"}`}>
+                        <span className="text-white text-xs">{msg.role === "user" ? "You" : "AI"}</span>
+                      </div>
+                      <div>
+                        <p className={`mb-2 ${msg.role === "user" ? "text-cyan-200" : "text-purple-200"}`}>{msg.content}</p>
+                        {/* Show images if present for this AI message */}
+                        {msg.role === "ai" && aiImages[idx] && aiImages[idx].length > 0 && (
+                          <div className="flex flex-wrap gap-2 mt-2">
+                            {aiImages[idx].slice(0, 3).map((img, imgIdx) => (
+                              <img
+                                key={imgIdx}
+                                src={img}
+                                alt="Related visual"
+                                className="w-32 h-24 object-cover rounded-lg border border-purple-700 shadow"
+                              />
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            ))}
             <div ref={messagesEndRef} />
           </div>
           {/* Listening animation, bottom-center above input */}
@@ -435,5 +466,7 @@ const Chat = () => {
     </section>
   );
 };
+
+
 
 export default Chat;
