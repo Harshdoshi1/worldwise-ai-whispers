@@ -1,13 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Mic, MicOff, Headphones, Volume2 } from "lucide-react";
+import { Mic, MicOff, Headphones } from "lucide-react";
 import { useState } from "react";
-import useVoiceRecognition from "@/hooks/useVoiceRecognition";
 
 const VoiceDemo = () => {
+  const [isRecording, setIsRecording] = useState(false);
   const [currentDemo, setCurrentDemo] = useState(0);
-  const [isPlayingResponse, setIsPlayingResponse] = useState(false);
-  const { isListening, transcript, startListening, stopListening, isSupported } = useVoiceRecognition();
 
   const demoConversations = [
     {
@@ -28,27 +26,14 @@ const VoiceDemo = () => {
   ];
 
   const toggleRecording = () => {
-    if (isListening) {
-      stopListening();
-    } else {
-      if (isSupported) {
-        startListening();
-        setTimeout(() => {
-          stopListening();
-          setCurrentDemo((prev) => (prev + 1) % demoConversations.length);
-        }, 3000);
-      } else {
-        alert('Speech recognition is not supported in your browser. Please try Chrome or Edge.');
-      }
+    setIsRecording(!isRecording);
+    if (!isRecording) {
+      // Simulate advancing through demo conversations
+      setTimeout(() => {
+        setIsRecording(false);
+        setCurrentDemo((prev) => (prev + 1) % demoConversations.length);
+      }, 3000);
     }
-  };
-
-  const playResponse = () => {
-    setIsPlayingResponse(true);
-    // Simulate playing audio response
-    setTimeout(() => {
-      setIsPlayingResponse(false);
-    }, 2000);
   };
 
   return (
@@ -66,7 +51,7 @@ const VoiceDemo = () => {
         </div>
 
         <div className="grid md:grid-cols-2 gap-8 items-center">
-          {/* Voice Interface - Updated */}
+          {/* Voice Interface */}
           <div className="text-center">
             <div className="bg-gray-900/80 backdrop-blur-sm rounded-3xl p-8 border border-gray-800">
               <div className="mb-8">
@@ -74,18 +59,12 @@ const VoiceDemo = () => {
                   onClick={toggleRecording}
                   size="lg"
                   className={`w-24 h-24 rounded-full transition-all duration-300 ${
-<<<<<<< HEAD
                     isRecording
                       ? "bg-red-500 hover:bg-red-600 animate-pulse"
                       : "bg-gradient-to-br from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 hover:scale-110"
-=======
-                    isListening 
-                      ? 'bg-red-500 hover:bg-red-600 animate-pulse' 
-                      : 'bg-gradient-to-br from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 hover:scale-110'
->>>>>>> 937182c4086ed7e5e2b895deaaba534da4de40e4
                   }`}
                 >
-                  {isListening ? (
+                  {isRecording ? (
                     <MicOff className="w-8 h-8 text-white" />
                   ) : (
                     <Mic className="w-8 h-8 text-white" />
@@ -94,28 +73,14 @@ const VoiceDemo = () => {
               </div>
 
               <p className="text-gray-300 mb-4">
-<<<<<<< HEAD
                 {isRecording ? "Listening..." : "Tap to speak"}
               </p>
 
-=======
-                {isListening ? 'Listening...' : 'Tap to speak'}
-              </p>
-              
-              {transcript && (
-                <div className="bg-black/50 p-3 rounded-lg mb-4">
-                  <p className="text-green-400 text-sm">You said:</p>
-                  <p className="text-white text-sm">{transcript}</p>
-                </div>
-              )}
-              
->>>>>>> 937182c4086ed7e5e2b895deaaba534da4de40e4
               <div className="flex justify-center space-x-2">
                 {[...Array(5)].map((_, i) => (
                   <div
                     key={i}
                     className={`w-2 h-8 bg-gradient-to-t from-blue-500 to-purple-500 rounded-full transition-all duration-300 ${
-<<<<<<< HEAD
                       isRecording ? "animate-pulse" : "opacity-30"
                     }`}
                     style={{
@@ -123,13 +88,6 @@ const VoiceDemo = () => {
                       height: isRecording
                         ? `${20 + Math.random() * 20}px`
                         : "8px",
-=======
-                      isListening ? 'animate-pulse' : 'opacity-30'
-                    }`}
-                    style={{
-                      animationDelay: `${i * 0.1}s`,
-                      height: isListening ? `${20 + Math.random() * 20}px` : '8px'
->>>>>>> 937182c4086ed7e5e2b895deaaba534da4de40e4
                     }}
                   />
                 ))}
@@ -137,7 +95,7 @@ const VoiceDemo = () => {
             </div>
           </div>
 
-          {/* Demo Conversation - Updated */}
+          {/* Demo Conversation */}
           <div className="space-y-4">
             <Card className="bg-blue-900/20 border-blue-800/50">
               <CardContent className="p-4">
@@ -146,11 +104,7 @@ const VoiceDemo = () => {
                     <span className="text-white text-sm">You</span>
                   </div>
                   <p className="text-blue-200">
-<<<<<<< HEAD
                     {demoConversations[currentDemo].question}
-=======
-                    {transcript || demoConversations[currentDemo].question}
->>>>>>> 937182c4086ed7e5e2b895deaaba534da4de40e4
                   </p>
                 </div>
               </CardContent>
@@ -162,7 +116,6 @@ const VoiceDemo = () => {
                   <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-blue-500 rounded-full flex items-center justify-center">
                     <span className="text-white text-xs">AI</span>
                   </div>
-<<<<<<< HEAD
                   <div>
                     <p className="text-purple-200 mb-2">
                       {demoConversations[currentDemo].response}
@@ -170,26 +123,6 @@ const VoiceDemo = () => {
                     <div className="flex items-center space-x-2 text-gray-400 text-sm">
                       <Headphones className="w-4 h-4" />
                       <span>Voice response available</span>
-=======
-                  <div className="flex-1">
-                    <p className="text-purple-200 mb-2">{demoConversations[currentDemo].response}</p>
-                    <div className="flex items-center space-x-2">
-                      <Button
-                        onClick={playResponse}
-                        variant="ghost"
-                        size="sm"
-                        className={`text-gray-400 hover:text-white p-1 ${isPlayingResponse ? 'text-green-400' : ''}`}
-                      >
-                        {isPlayingResponse ? (
-                          <Volume2 className="w-4 h-4 animate-pulse" />
-                        ) : (
-                          <Headphones className="w-4 h-4" />
-                        )}
-                        <span className="ml-1 text-sm">
-                          {isPlayingResponse ? 'Playing...' : 'Play response'}
-                        </span>
-                      </Button>
->>>>>>> 937182c4086ed7e5e2b895deaaba534da4de40e4
                     </div>
                   </div>
                 </div>

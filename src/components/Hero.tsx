@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button";
-<<<<<<< HEAD
 import { Mic, Search, MicOff, Send } from "lucide-react";
 import { useState, useRef } from "react";
 import React from "react";
@@ -77,41 +76,6 @@ const Hero = () => {
     window.addEventListener("send-to-chat", handleSendToChat);
     return () => window.removeEventListener("send-to-chat", handleSendToChat);
   }, []);
-=======
-import { Mic, Search, MicOff } from "lucide-react";
-import { useState } from "react";
-import LoginDialog from "./LoginDialog";
-import useVoiceRecognition from "@/hooks/useVoiceRecognition";
-
-const Hero = () => {
-  const [isVoiceMode, setIsVoiceMode] = useState(true);
-  const [textInput, setTextInput] = useState('');
-  const { isListening, transcript, startListening, stopListening, isSupported } = useVoiceRecognition();
-
-  const handleVoiceToggle = () => {
-    if (isListening) {
-      stopListening();
-    } else {
-      if (isSupported) {
-        startListening();
-      } else {
-        alert('Speech recognition is not supported in your browser. Please try Chrome or Edge.');
-      }
-    }
-  };
-
-  const handleTextSubmit = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && textInput.trim()) {
-      alert(`You asked: "${textInput}"\nAI response would appear here!`);
-      setTextInput('');
-    }
-  };
-
-  const handleWatchDemo = () => {
-    // Scroll to demo section
-    document.getElementById('demo')?.scrollIntoView({ behavior: 'smooth' });
-  };
->>>>>>> 937182c4086ed7e5e2b895deaaba534da4de40e4
 
   return (
     <section className="relative min-h-screen flex items-center justify-center px-6 py-20">
@@ -143,7 +107,6 @@ const Hero = () => {
         {/* Interactive Demo - Updated */}
         <div className="mb-12">
           <div className="bg-gray-900/50 backdrop-blur-md rounded-2xl p-8 max-w-2xl mx-auto border border-gray-800">
-<<<<<<< HEAD
             <div className="text-center">
               <div className="mb-8 flex flex-col items-center">
                 <Button
@@ -156,43 +119,10 @@ const Hero = () => {
                   }`}
                 >
                   {listening ? (
-=======
-            <div className="flex items-center justify-center mb-6">
-              <Button
-                variant={isVoiceMode ? "default" : "outline"}
-                onClick={() => setIsVoiceMode(true)}
-                className={`mr-4 ${isVoiceMode ? 'bg-gradient-to-r from-blue-600 to-purple-600' : 'border-gray-600'}`}
-              >
-                <Mic className="w-4 h-4 mr-2" />
-                Voice
-              </Button>
-              <Button
-                variant={!isVoiceMode ? "default" : "outline"}
-                onClick={() => setIsVoiceMode(false)}
-                className={`${!isVoiceMode ? 'bg-gradient-to-r from-blue-600 to-purple-600' : 'border-gray-600'}`}
-              >
-                <Search className="w-4 h-4 mr-2" />
-                Text
-              </Button>
-            </div>
-
-            {isVoiceMode ? (
-              <div className="text-center">
-                <div 
-                  onClick={handleVoiceToggle}
-                  className={`w-20 h-20 mx-auto mb-4 rounded-full flex items-center justify-center transition-transform cursor-pointer ${
-                    isListening 
-                      ? 'bg-red-500 hover:bg-red-600 animate-pulse' 
-                      : 'bg-gradient-to-br from-blue-500 to-purple-600 hover:scale-110'
-                  }`}
-                >
-                  {isListening ? (
->>>>>>> 937182c4086ed7e5e2b895deaaba534da4de40e4
                     <MicOff className="w-8 h-8 text-white" />
                   ) : (
                     <Mic className="w-8 h-8 text-white" />
                   )}
-<<<<<<< HEAD
                 </Button>
                 <p className="text-gray-300 mb-2">
                   {listening ? "Listening..." : "Tap to speak"}
@@ -231,39 +161,11 @@ const Hero = () => {
                 )}
               </div>
             </div>
-=======
-                </div>
-                <p className="text-gray-300 mb-2">
-                  {isListening ? 'Listening... Click to stop' : 'Click microphone to start'}
-                </p>
-                {transcript && (
-                  <div className="bg-black/50 p-3 rounded-lg mb-4">
-                    <p className="text-green-400 text-sm">You said:</p>
-                    <p className="text-white">{transcript}</p>
-                  </div>
-                )}
-                <p className="text-blue-400 font-medium">"Tell me about Tokyo's food scene"</p>
-              </div>
-            ) : (
-              <div className="text-center">
-                <input
-                  type="text"
-                  placeholder="Ask me about any destination..."
-                  value={textInput}
-                  onChange={(e) => setTextInput(e.target.value)}
-                  onKeyPress={handleTextSubmit}
-                  className="w-full p-4 bg-black/50 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:border-blue-500 focus:outline-none"
-                />
-                <p className="text-gray-400 mt-2 text-sm">Press Enter to explore</p>
-              </div>
-            )}
->>>>>>> 937182c4086ed7e5e2b895deaaba534da4de40e4
           </div>
         </div>
 
         {/* CTA Buttons - Updated */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-<<<<<<< HEAD
           <Button
             size="lg"
             className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-4 text-lg"
@@ -287,20 +189,6 @@ const Hero = () => {
             }}
           >
             Ask AI
-=======
-          <LoginDialog>
-            <Button size="lg" className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-4 text-lg">
-              Start Exploring
-            </Button>
-          </LoginDialog>
-          <Button 
-            size="lg" 
-            variant="outline" 
-            onClick={handleWatchDemo}
-            className="border-gray-600 text-gray-300 hover:text-white hover:border-gray-500 px-8 py-4 text-lg"
-          >
-            Watch Demo
->>>>>>> 937182c4086ed7e5e2b895deaaba534da4de40e4
           </Button>
         </div>
 
