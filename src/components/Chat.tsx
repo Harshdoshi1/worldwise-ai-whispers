@@ -122,7 +122,7 @@ const Chat = ({
         }
       }
       if (!userMsg) return;
-      fetch(`http://localhost:3001/images?q=${encodeURIComponent(userMsg)}`)
+      fetch(`https://worldwise-ai-whispers.onrender.com/images?q=${encodeURIComponent(userMsg)}`)
         .then((res) => res.json())
         .then((data) => {
           setAiImages((prev) => ({ ...prev, [lastIdx]: data.images || [] }));
@@ -152,7 +152,7 @@ const Chat = ({
     setUserMessage("");
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:3001/chat", {
+      const res = await fetch("https://worldwise-ai-whispers.onrender.com/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message: input }),

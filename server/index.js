@@ -13,13 +13,11 @@ dotenv.config();
 const app = express();
 app.use(
   cors({
-    origin: (origin, callback) => {
-      if (!origin || origin.startsWith("http://localhost:")) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
+    origin: [
+      "http://localhost:5173",
+      "http://localhost:3000",
+      "https://worldwise-ai.vercel.app"
+    ],
     credentials: true,
   })
 );
@@ -51,7 +49,7 @@ passport.use(
         "826741736114-v12ng7vju6ic9m29jemsqass0bcgbing.apps.googleusercontent.com",
       clientSecret:
         "826741736114-v12ng7vju6ic9m29jemsqass0bcgbing.apps.googleusercontent.com", // Replace with real secret if you have it
-      callbackURL: "/auth/google/callback",
+      callbackURL: process.env.GOOGLE_CALLBACK_URL || "https://worldwise-ai-whispers.onrender.com/auth/google/callback",
     },
     (accessToken, refreshToken, profile, done) => {
       // You can store user info in DB here if needed
@@ -81,13 +79,13 @@ app.get(
   }),
   (req, res) => {
     // Redirect to frontend after login
-    res.redirect("http://localhost:5173");
+    res.redirect("https://worldwise-ai.vercel.app");
   }
 );
 
 app.get("/logout", (req, res) => {
   req.logout(() => {
-    res.redirect("http://localhost:5173");
+    res.redirect("https://worldwise-ai.vercel.app");
   });
 });
 
